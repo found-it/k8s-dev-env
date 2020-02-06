@@ -1,8 +1,25 @@
 
 - hosts: localhost
   connection: local
+
+  vars:
+    nodes:
+      - k8s-master0
+      - k8s-worker0
+      - k8s-worker1
+
   tasks:
-    - name: Create a started container
+    - name: Delete existing nodes
+      lxd_container:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ nodes }}"
+      register: deleting
+
+    - debug:
+        var: deleting
+
+    - name: Create all the nodes
       lxd_container:
         name: "{{ item }}"
         state: started
@@ -15,7 +32,4 @@
         profiles: ["default"]
         wait_for_ipv4_addresses: true
         timeout: 600
-      with_items:
-        - k8s-master0
-        - k8s-worker0
-        - k8s-worker1
+      with_items: "{{ nodes }}"
