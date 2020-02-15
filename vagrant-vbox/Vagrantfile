@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
         master.vm.network "private_network", ip: MASTER_IP
         master.vm.hostname = "k8s-master"
         master.vm.provision "ansible" do |ansible|
-            ansible.playbook = "ansible/master-playbook.yaml"
+            ansible.playbook = "provision/master-playbook.yaml"
             ansible.extra_vars = {
                 node_ip: MASTER_IP,
             }
@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
             worker.vm.network "private_network", ip: "#{WORKER_IP}#{i + 10}"
             worker.vm.hostname = "k8s-worker#{i}"
             worker.vm.provision "ansible" do |ansible|
-                ansible.playbook = "ansible/worker-playbook.yaml"
+                ansible.playbook = "provision/worker-playbook.yaml"
                 ansible.extra_vars = {
                     node_ip: "#{WORKER_IP}#{i + 10}",
                 }
